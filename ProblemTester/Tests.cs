@@ -12,9 +12,9 @@ namespace ProblemTester
         [InlineData("3, 10, 15", "18")]
         [InlineData("2,3,5,19,121,852", "11443")]
         [InlineData("3,5", "4")]
-        public void IsSolvable(string a, string b)
+        public void IsSolvable(string input, string goal)
         {
-            var problem = Problem.Init(new string[] { a, b });
+            var problem = Problem.Init(new string[] { input, goal });
             var solution = problem.Search();
             Assert.NotNull(solution);
         }
@@ -24,9 +24,9 @@ namespace ProblemTester
         [InlineData("3, 6", "10")]
         [InlineData("2,4,10", "101")]
         [InlineData("2", "143")]
-        public void NotSolvable(string a, string b)
+        public void NotSolvable(string input, string goal)
         {
-            var problem = Problem.Init(new string[] { a, b });
+            var problem = Problem.Init(new string[] { input, goal });
             var solution = problem.Search();
             Assert.Null(solution);
         }
@@ -41,13 +41,14 @@ namespace ProblemTester
         [InlineData("3,5", "4",7)]
         [InlineData("3,5", "17",9)]
         [InlineData("3,5", "14",8)]
+        [InlineData("2, 4, 5", "8",4)]
         [InlineData("1,94,100", "12",7)]
         [InlineData("1,97,100", "3",3)]
-        public void HasFoundCorrentSteps(string a, string b,float cost)
+        public void HasFoundCorrentSteps(string input, string goal,float expectedCost)
         {
-            var problem = Problem.Init(new string[] { a, b });
+            var problem = Problem.Init(new string[] { input, goal });
             var solution = problem.Search();
-            Assert.Equal(solution.Cost,cost);
+            Assert.Equal(solution.Cost,expectedCost);
         }
 
         [Theory]
@@ -55,11 +56,11 @@ namespace ProblemTester
         [InlineData("2,3,5,19,121,852", "11443", 10000)]
         [InlineData("2,3,5,19,121,852", "21443", 10000)]
         [InlineData("3,5,8,10", "207", 10000)]
-        public void ShouldNotTakeLongerThan(string a, string b, long milliseconds)
+        public void ShouldNotTakeLongerThan(string input, string goal, long milliseconds)
         {
             var sw = Stopwatch.StartNew();
             sw.Start();
-            var problem = Problem.Init(new string[] { a, b });
+            var problem = Problem.Init(new string[] { input, goal });
             problem.Search();
             sw.Stop();
 
@@ -78,22 +79,22 @@ namespace ProblemTester
         [InlineData("1,97,100", "3", 3)]
         [InlineData("3,70,110,4000", "4064", 44)]
      
-        public void Is_Admissable(string a, string b, float max  )
+        public void Is_Admissable(string input, string goal, float cost  )
         {
-            var problem = Problem.Init(new string[] { a, b.ToString() });
+            var problem = Problem.Init(new string[] { input, goal.ToString() });
             var solution = problem.Search();
 
-            float maxEstiomation=0;
+            float maxEstimation=0;
             while (solution!=null)
             {
-                if (solution.Distance > maxEstiomation)
+                if (solution.Distance > maxEstimation)
                 {
-                    maxEstiomation = solution.Distance;
+                    maxEstimation = solution.Distance;
                 };
                 solution = solution.Parent;
             }
 
-            Assert.True(maxEstiomation <= max);
+            Assert.True(maxEstimation <= cost);
         }
 
 

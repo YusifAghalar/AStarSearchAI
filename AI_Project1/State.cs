@@ -55,17 +55,17 @@ namespace AI_Project1
            
 
             if (remainder == 0) return 0; 
-            var candidate = pithces.OrderByDescending(x => x).FirstOrDefault();
+            var maxPitch = pithces.OrderByDescending(x => x).FirstOrDefault();
 
             if (pithces.Any(x => x == remainder)||currentValues.Any(x=>x==remainder))
                 return 1;
-            float remainderEstimate = (float) (Math.Floor(remainder / candidate) * 2);
+            float remainderEstimate = (float) (Math.Floor(remainder / maxPitch) * 2);
 
             if (pithces.Count == 1 && remainder != 0) return 1;
 
-            pithces.Remove(candidate);
+            pithces.Remove(maxPitch);
 
-            return remainderEstimate+Math.Min(EstimateRemainder(remainder % candidate, new List<float>(pithces),currentValues ), EstimateRemainder(candidate - remainder % candidate, new List<float>(pithces),currentValues)+2);
+            return remainderEstimate+Math.Min(EstimateRemainder(remainder % maxPitch, new List<float>(pithces),currentValues ), EstimateRemainder(maxPitch - remainder % maxPitch, new List<float>(pithces),currentValues)+2);
         }
 
         private void Estimate(float maxCap, IEnumerable<float> capacities, IEnumerable<float> current)
